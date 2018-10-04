@@ -104,3 +104,6 @@ venv.bak/
 
 # log dir
 log
+
+# Pytorch
+*.pth

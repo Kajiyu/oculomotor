@@ -1,4 +1,6 @@
 numpy==1.14.5
+scikit-learn
+scikit-image
 flask
 flask-cors
 pygame

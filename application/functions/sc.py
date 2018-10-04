@@ -23,12 +23,12 @@ class SC(object):
         # Likelihood thresolds from BG module.
         bg_data = inputs['from_bg']
 
-        action = self._decide_action(fef_data, bg_data)
+        # action = self._decide_action(fef_data, bg_data)
         
-        # Store FEF data for debug visualizer
-        self.last_fef_data = fef_data
+        # # Store FEF data for debug visualizer
+        # self.last_fef_data = fef_data
         
-        return dict(to_environment=action)
+        return dict(to_environment=bg_data)
 
     def _decide_action(self, fef_data, bg_data):
         sum_ex = 0.0

@@ -152,22 +152,22 @@ class FEF(object):
         retina_image = inputs['from_vc']
         
         # TODO: 領野をまたいだ共通phaseをどう定義するか？
-        if phase == 0:
-            for cursor_accumulator in self.cursor_accumulators:
-                cursor_accumulator.process(retina_image)
-        else:
-            for saliency_accumulator in self.saliency_accumulators:
-                saliency_accumulator.process(saliency_map)
+        # if phase == 0:
+        #     for cursor_accumulator in self.cursor_accumulators:
+        #         cursor_accumulator.process(retina_image)
+        for saliency_accumulator in self.saliency_accumulators:
+            saliency_accumulator.process(saliency_map)
 
         for saliency_accumulator in self.saliency_accumulators:
             saliency_accumulator.post_process()
-        for cursor_accumulator in self.cursor_accumulators:
-            cursor_accumulator.post_process()
+        # for cursor_accumulator in self.cursor_accumulators:
+        #     cursor_accumulator.post_process()
         
         output = self._collect_output()
+        # print("FEF output", output.shape)
         
         return dict(to_pfc=None,
-                    to_bg=output,
+                    to_bg=(output, retina_image),
                     to_sc=output,
                     to_cb=None)
 
@@ -175,6 +175,6 @@ class FEF(object):
         output = []
         for saliency_accumulator in self.saliency_accumulators:
             output.append(saliency_accumulator.output)
-        for cursor_accumulator in self.cursor_accumulators:
-            output.append(cursor_accumulator.output)
+        # for cursor_accumulator in self.cursor_accumulators:
+        #     output.append(cursor_accumulator.output)
         return np.array(output, dtype=np.float32)
