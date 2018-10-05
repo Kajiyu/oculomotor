@@ -104,6 +104,7 @@ def train(content, step_size, logger):
             logger.log("episode_reward", episode_reward, episode_count)
             
             episode_reward = 0
+            step = 0s
             
             # Plase add model save code as you like.
             #
