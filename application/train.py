@@ -12,7 +12,7 @@ from oculoenv import PointToTargetContent, ChangeDetectionContent, OddOneOutCont
     MultipleObjectTrackingContent, RandomDotMotionDiscriminationContent
 from logger import Logger
 
-
+EPI_THRESHOLD = 2000
 
 class Contents(object):
     POINT_TO_TARGET = 1
@@ -45,7 +45,7 @@ def train(content, step_size, logger):
     vc = VC()
     pfc = PFC()
     fef = FEF()
-    bg = BG()
+    bg = BG(init_weight_path="./data/bg.pth")
     sc = SC()
     hp = HP()
     cb = CB()
@@ -78,6 +78,7 @@ def train(content, step_size, logger):
     
     episode_reward = 0
     episode_count = 0
+    step = 0
 
     # Add initial reward log
     logger.log("episode_reward", episode_reward, episode_count)
@@ -90,6 +91,9 @@ def train(content, step_size, logger):
         obs, reward, done, _ = env.step(action)
         
         episode_reward += reward
+        step += 1
+        if step % EPI_THRESHOLD == 0:
+            done = True
 
         if done:
             obs = env.reset()

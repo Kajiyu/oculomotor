@@ -228,7 +228,7 @@ def evaluate(logger, log_path):
     vc = VC()
     pfc = PFC()
     fef = FEF()
-    bg = BG()
+    bg = BG(training=False, init_weight_path="./data/bg.pth")
     sc = SC()
     hp = HP()
     cb = CB()

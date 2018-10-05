@@ -24,7 +24,7 @@ def initialize_parameters(m):
 
 
 memory_size = 64
-rollout_steps = 20
+rollout_steps = 50
 save_steps = 100
 value_coeff = 0.5
 entropy_coeff = 0.01
@@ -120,6 +120,7 @@ class BG(object):
         self.ep_rewards = [0.]
         self.cuda = use_cuda
         self.ac_model = ACModel()
+        self.ac_model.load_state_dict(torch.load(init_weight_path))
         self.optimizer = optim.Adam(self.ac_model.parameters(), lr=lr)
         if self.cuda: self.ac_model = self.ac_model.cuda()
         self.init_params()
@@ -143,8 +144,8 @@ class BG(object):
 
         self.total_steps += 1
         self.ep_rewards = self.ep_rewards + rewards
-        if done:
-            ep_rewards = 0
+        # if done:
+        #     ep_rewards = 0
         rewards = torch.from_numpy(rewards).float().unsqueeze(1)
         if self.cuda: rewards = rewards.cuda()
         if self.prev_actions is not None:
@@ -192,7 +193,7 @@ class BG(object):
 
         policy_loss = (-log_action_probs * Variable(advantages)).sum()
         value_loss = (.5 * (values - Variable(returns)) ** 2.).sum()
-        entropy_loss = entropies.sum()
+        entropy_loss = (-1)*entropies.sum()
 #         entropy_loss = (log_probs * probs).sum()
 
         loss = policy_loss + value_loss * value_coeff + entropy_loss * entropy_coeff
@@ -202,6 +203,8 @@ class BG(object):
         self.optimizer.step()
         self.optimizer.zero_grad()
         print("total step", self.total_steps)
+        print("Loss:", loss.data[0])
+        print("Return:", torch.mean(returns).data[0])
         
 
     def init_params(self):
